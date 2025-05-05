@@ -1,7 +1,7 @@
 if status is-interactive
+    fastfetch --config examples/13
     # Commands to run in interactive sessions can go here
 end
-
 
 # =========================================
 # 00-INITIALIZATION
@@ -17,11 +17,11 @@ starship init fish | source
 # -----------------------------------------
 export EDITOR=nvim
 export XDG_CONFIG_HOME="$HOME/.config"
-export PATH="/usr/lib/ccache/bin/:$PATH"
+export PATH="/usr/local/bin:$PATH"  # Adjusted for macOS
 
-#export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-#export PATH="$JAVA_HOME/bin/:$PATH"
-
+# Uncomment and set JAVA_HOME if needed
+# export JAVA_HOME=$(/usr/libexec/java_home)
+# export PATH="$JAVA_HOME/bin:$PATH"
 
 ## =========================================
 ## 10-ALIASES
@@ -41,14 +41,15 @@ alias ls='eza -a --icons'
 alias ll='eza -al --icons'
 alias lt='eza -a --tree --level=1 --icons'
 
-alias shutdown='systemctl poweroff'
+# macOS does not use systemctl
+alias shutdown='sudo shutdown -h now'
 
 # Timeshift (make backup snapshot)
 alias ts='~/.config/ml4w/scripts/snapshot.sh'
-# Cleanup unused package, cache, and repo (pacman)
-alias cleanup='~/.config/ml4w/scripts/cleanup.sh'
+# Cleanup unused package, cache, and repo (brew)
+alias cleanup='brew cleanup'
 
-alias wifi='nmtui'
+alias wifi='networksetup -setairportpower en0 off'  # Example for toggling Wi-Fi
 
 # NVIMF (Nvim with FZF)
 alias nvimf='$EDITOR $(fzf --preview="bat --color=always {}")'
@@ -58,9 +59,6 @@ alias v='$EDITOR'
 alias vim='$EDITOR'
 alias nvim-config='nvim ~/.config/nvim'
 alias vc='nvim-config'
-
-# Wezterm Terminal from flatpak
-# alias wezterm='flatpak run org.wezfurlong.wezterm'
 
 # -----------------------------------------------------
 # ML4W Apps
@@ -96,7 +94,7 @@ alias freetar='~/scripts/start_freetar.sh'
 # -----------------------------------------------------
 # System
 # -----------------------------------------------------
-alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
+alias update-grub='echo "No grub on macOS"'  # Placeholder for macOS
 
 ## -----------------------------------------------------
 ## 20-CUSTOMIZATION
@@ -108,13 +106,8 @@ alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
 # Zoxide
 eval "$(zoxide init --cmd cd fish)"
 
-# Pywal
-# cat ~/.cache/wal/sequences # Disabling pywal for wallust
-
-# Wallust
-# cat ~/.cache/wallust/sequences # Disabling wallust for catppuccin mocha in foot.ini
-
 # NVM
+set -gx NVM_DIR (brew --prefix nvm)
 # export NVM_DIR="$HOME/.nvm"
 # if test -s "$NVM_DIR/nvm.sh"
 #     source "$NVM_DIR/nvm.sh"
@@ -124,8 +117,11 @@ eval "$(zoxide init --cmd cd fish)"
 nvm use node --silent
 
 # PNPM
-export PNPM_HOME="/home/movaa/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
+
+# LUA 5.1
+export PATH="~/.local/bin/:$PATH"
 
 # THEME
 # fish_config theme save "Catppuccin Mocha"
@@ -141,19 +137,19 @@ if string match -q "*pts*" (tty)
     fastfetch --config examples/13
 else
     echo
-    if test -f /bin/qtile
+    if test -f /usr/local/bin/qtile
         echo "Start Qtile X11 with command Qtile"
     end
-    if test -f /bin/hyprctl
+    if test -f /usr/local/bin/hyprctl
         echo "Start Hyprland with command Hyprland"
     end
 end
 
 # Created by `pipx` on 2024-08-19 17:46:14
-set PATH $PATH /home/movaa/.local/bin
+set PATH $PATH $HOME/.local/bin
 
 ## -----------------------------------------
 ## 40-PROMPT
 ## -----------------------------------------
 
-fish_add_path /home/movaa/.spicetify
+fish_add_path $HOME/.spicetify
